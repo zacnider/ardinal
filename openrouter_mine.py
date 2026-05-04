@@ -57,7 +57,7 @@ except ImportError:
     fcntl = None  # type: ignore[misc, assignment]
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_STAKER = "0x266836a48c76f5a5e5d6265a97d7f3d90e339072"
+DEFAULT_STAKER = "kendiadresini koy"
 
 
 def load_dotenv_optional(project_dir: Path) -> None:
