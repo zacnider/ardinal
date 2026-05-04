@@ -9,6 +9,7 @@ cd "$ROOT"
 if [[ ${1:-} == "--help" ]] || [[ ${1:-} == "-h" ]]; then
   echo "Usage: cd /path/to/ardinal && bash install-server.sh"
   echo "Installs: git curl ca-certificates python3 pip, Node.js 20+, certifi, then setup-local.sh"
+  echo "Env: INSTALL_SERVER_APT_IPV4=0 — apt için IPv4 zorlamasını yazma (varsayılan: 1, kırık IPv6 VPS için)"
   exit 0
 fi
 
@@ -20,6 +21,13 @@ if [[ "$(id -u)" -ne 0 ]]; then
     echo "Root veya sudo gerekli (apt kurulumu için)." >&2
     exit 1
   fi
+fi
+
+# Birçok VPS'te IPv6 dışarı çıkmaz; apt archive.ubuntu.com'a IPv6 ile gidince "Network is unreachable" olur.
+APT_FORCE_IPV4="/etc/apt/apt.conf.d/99ardinal-apt-ipv4"
+if [[ "${INSTALL_SERVER_APT_IPV4:-1}" != "0" ]]; then
+  echo "==> apt: IPv4 zorlama (kırık IPv6 için; kapatmak: INSTALL_SERVER_APT_IPV4=0)"
+  echo 'Acquire::ForceIPv4 "true";' | $SUDO tee "$APT_FORCE_IPV4" >/dev/null
 fi
 
 echo "==> apt: temel paketler"
