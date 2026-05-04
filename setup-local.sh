@@ -44,6 +44,13 @@ if [[ ! -d awp-wallet/.git ]]; then
   git clone --depth 1 https://github.com/awp-core/awp-wallet.git awp-wallet
 fi
 
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+  echo "Hata: node veya npm yok. Önce Node.js 18+ kur, sonra tekrar çalıştır:" >&2
+  echo "  Ubuntu: cd \"$ROOT\" && bash install-server.sh" >&2
+  echo "  veya: https://nodejs.org/ → LTS indir (diğer dağıtımlar)" >&2
+  exit 1
+fi
+
 echo "npm install (awp-wallet) ..."
 (cd awp-wallet && npm install --no-audit --no-fund >/dev/null)
 chmod +x awp-wallet/scripts/wallet-cli.js
