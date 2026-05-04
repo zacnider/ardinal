@@ -1,0 +1,272 @@
+# Ardinal — kurulum (uçtan uca)
+
+Bu dosya: **indir → kur → cüzdan → ETH → swap/stake → mining başlat**. Başka bir şey okuman şart değil.
+
+**Risk:** Gerçek ETH harcanır; stake ve swap geri alınamayabilir. Küçük miktarla dene.
+
+---
+
+## 0) Lazım olanlar
+
+- Mac, Linux veya **Ubuntu sunucu**
+- İnternet
+- [OpenRouter](https://openrouter.ai/) hesabı + **API key** (otomatik mining için)
+- Biraz **Base ağı ETH** (gas + gerekirse stake)
+
+**Güvenlik:** API anahtarı ve cüzdan kelimelerini **kimseyle paylaşma**, ekran görüntüsü atma. `.env` dosyanı GitHub’a yükleme.
+
+---
+
+## 1) Projeyi indir
+
+**Git varsa** (repo adresini kendi linkinle değiştir):
+
+```bash
+git clone https://github.com/zacnider/ardinal.git
+cd ardinal
+```
+
+**Git yoksa:** GitHub’da **Code → Download ZIP** → Zip’i aç → **Terminal** aç → o klasöre gir:
+
+```bash
+cd ~/Downloads/ardinal-main
+```
+
+`ls` yaz; listede **`ardi`** ve **`setup-local.sh`** görünüyorsa doğru klasördesin. Görünmüyorsa bir üst klasöre çık (`cd ..`) ve tekrar dene.
+
+**Terminal nerede:** Mac’te ⌘+Boşluk → “Terminal” yaz → Enter.
+
+---
+
+## 2) Bilgisayara araçları kur (Mac veya Linux masaüstü)
+
+### 2.1 Node.js ve Python — var mı kontrol, yoksa kur
+
+Önce Terminalde şunları yaz (her satırdan sonra Enter):
+
+```bash
+node -v
+python3 --version
+```
+
+**`node -v` çalışıyor ve sürüm 18 veya üstüyse (tercihen 20+)** → Node tamam.
+
+**`command not found` veya sürüm 18’in altı** → Node kur:
+
+- **Mac:** Tarayıcıda [https://nodejs.org/](https://nodejs.org/) aç → **LTS** yazan yeşil butonla **İndir** (`.pkg`) → indirilen dosyaya çift tıkla → kurulum sihirbazını bitir → Terminal pencerelerini **kapat**, yeni Terminal aç → tekrar `node -v` dene.
+- **Ubuntu / Debian masaüstü:** Terminalde:
+  ```bash
+  sudo apt update
+  sudo apt install -y nodejs npm
+  ```
+  Sürüm çok eskiyse [nodejs.org](https://nodejs.org/) üzerinden LTS `.deb` indirip kur veya resmi [NodeSource kurulum talimatı](https://github.com/nodesource/distributions#installation-instructions) ile 20.x ekle.
+
+**`python3 --version` çalışmıyor veya “command not found”** → Python kur:
+
+- **Mac:** [https://www.python.org/downloads/](https://www.python.org/downloads/) → **Download Python 3.x** → indirilen `.pkg` ile kur → yeni Terminal → `python3 --version`.
+- **Ubuntu / Debian:**  
+  ```bash
+  sudo apt update
+  sudo apt install -y python3 python3-pip
+  ```
+  Sonra `python3 --version`.
+
+Her iki komut da (`node -v` ve `python3 --version`) **birer sürüm numarası** yazdırıyorsa **2.2** adımına geç.
+
+### 2.2 Proje kurulumu
+
+**Hâlâ ardinal klasöründeyken:**
+
+```bash
+chmod +x ardi setup-local.sh
+bash setup-local.sh
+```
+
+Bu komut internetten dosya indirir; birkaç dakika sürebilir. Hata yoksa bitti.
+
+---
+
+## 3) Ubuntu sunucuda kurulum (isteğe bağlı)
+
+Sunucuda proje klasöründesin; **sudo veya root** yetkin olsun:
+
+```bash
+chmod +x install-server.sh ardi setup-local.sh
+bash install-server.sh
+```
+
+Mac’te **bu scripti çalıştırma** (Ubuntu/Debian içindir).
+
+---
+
+## 4) Cüzdan
+
+### 4.1 İlk kez: genelde hazır gelir
+
+`bash setup-local.sh` (veya `install-server.sh`) sonunda cüzdan **otomatik** oluşturulur. Ekstra bir şey yapmana gerek yok.
+
+### 4.2 Adresini ve durumu gör
+
+Proje klasöründe:
+
+```bash
+./ardi status
+```
+
+veya
+
+```bash
+./ardi preflight
+```
+
+Çıktıda **`0x` ile başlayan adres** senin ajan cüzdanın. Bunu not al; ETH buraya, `.env` içindeki `ARDI_STAKER` da buna yazılacak.
+
+### 4.3 Kelime öbeği (mnemonic) veya private key — sadece yedek için
+
+**Sadece kendi bilgisayarında**, güvenli bir ortamda:
+
+```bash
+bash export-wallet-secrets.sh
+```
+
+Çıkan kelimeleri **kağıda veya şifre kasasına** yaz; **asla** sohbet, mail, GitHub’a koyma. Bu kelimeler cüzdanının tam anahtarıdır.
+
+---
+
+## 5) ETH gönder
+
+1. `./ardi status` ile adresini al.  
+2. Borsa veya cüzdanından **Base** ağını seç.  
+3. Bu adrese **ETH** gönder (hem işlem ücreti hem stake için yeterli miktarda; tam rakam `gas` ve `buy-and-stake --quote` ile anlaşılır).
+
+Kontrol:
+
+```bash
+./ardi gas
+```
+
+---
+
+## 6) Stake (oyuna uygun olmak)
+
+Sırayla; her komuttan sonra çıkan yazıyı oku.
+
+```bash
+./ardi preflight
+```
+
+Eksik stake / gas diyorsa:
+
+```bash
+./ardi stake
+```
+
+ETH ile tek seferde **swap + stake** yolu (önce plan, para gitmez):
+
+```bash
+./ardi buy-and-stake --quote
+```
+
+Çıktıyı oku. Onaylıyorsan (kilit gününü quote’a göre seç):
+
+```bash
+./ardi buy-and-stake --yes --lock-days 3
+```
+
+`3` yerine kendi seçtiğin gün sayısını yaz (zorunlu).
+
+Son kontrol:
+
+```bash
+./ardi preflight
+```
+
+Burada oyun için yol **açık** görünüyorsa mining’e geçebilirsin.
+
+---
+
+## 7) Mining’i başlat (OpenRouter)
+
+### 7.1 API key
+
+[openrouter.ai](https://openrouter.ai/) → hesap → API keys → yeni anahtar oluştur.
+
+### 7.2 `.env` dosyası
+
+Proje klasöründe:
+
+```bash
+cp env.example .env
+nano .env
+```
+
+(`nano` yerine istediğin metin editörünü kullanabilirsin.)
+
+Şunları doldur:
+
+- `OPENROUTER_API_KEY` = OpenRouter anahtarın  
+- `OPENROUTER_MODEL` = kullanacağın modelin **tam adı** (OpenRouter model sayfasındaki id, ör. `anthropic/claude-3.5-sonnet`)  
+- `ARDI_STAKER` = `./ardi status` ile gördüğün **aynı** `0x...` adres (**mutlaka** doldur)
+
+Kaydet. `nano` için: Ctrl+O, Enter, Ctrl+X.
+
+### 7.3 Çalıştır
+
+```bash
+python3 openrouter_mine.py --auto-chain
+```
+
+- **Durdurmak:** Ctrl+C  
+- **Aynı cüzdanı** iki bilgisayarda **aynı anda** çalıştırma (hata ve nonce çakışması).
+
+**SSL / sertifika hatası** olursa önce:
+
+```bash
+pip3 install --user certifi
+```
+
+Hâlâ olmazsa (son çare, daha az güvenli):
+
+```bash
+python3 openrouter_mine.py --auto-chain --insecure-ssl
+```
+
+### 7.4 Sunucuda pencere kapanmasın diye (isteğe bağlı)
+
+```bash
+sudo apt install -y tmux
+tmux new -s ardi
+cd /path/to/ardinal
+python3 openrouter_mine.py --auto-chain
+```
+
+Ayrılmak: **Ctrl+b** sonra **d**. Geri: `tmux attach -t ardi`
+
+---
+
+## 8) Komut özeti (kopyalalık)
+
+| Adım | Komut |
+|------|--------|
+| İndir | `git clone ...` veya ZIP aç → `cd ardinal` |
+| Mac/Linux kur | `chmod +x ardi setup-local.sh` → `bash setup-local.sh` |
+| Ubuntu kur | `bash install-server.sh` |
+| Adres / kontrol | `./ardi status` veya `./ardi preflight` |
+| ETH kontrol | `./ardi gas` |
+| Stake menüsü | `./ardi stake` |
+| Swap+stake planı | `./ardi buy-and-stake --quote` |
+| Swap+stake uygula | `./ardi buy-and-stake --yes --lock-days GÜN` |
+| Mining | `cp env.example .env` → düzenle → `python3 openrouter_mine.py --auto-chain` |
+
+---
+
+## 9) Takıldığın yerde
+
+| Belirti | Ne yap |
+|---------|--------|
+| `setup-local.sh` yok | Yanlış klasördesin; `ls` ile `ardi` gör. |
+| `node: command not found` | Node LTS kur, Terminal’i yeniden aç. |
+| `OPENROUTER_API_KEY` hatası | `.env` proje kökünde mi, satır başında boşluk yok mu. |
+| Commit yanlış / staker | `.env` içinde `ARDI_STAKER` = `./ardi status` adresi. |
+
+Sunucuya taşıma, tmux, cüzdanı sıfırlama gibi **ek** konular: **`SETUP.md`**.
