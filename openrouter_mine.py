@@ -7,8 +7,10 @@ Gerekli ortam:
   export OPENROUTER_API_KEY="sk-or-..."
   export OPENROUTER_MODEL="anthropic/claude-sonnet-4"   # veya openrouter.ai/models listesinden
 
+Zorunlu (gerçek commit için; --dry-run hariç):
+  .env veya export: ARDI_STAKER="0x..."  # ./ardi status ile aynı ajan adresi
+
 İsteğe bağlı:
-  export ARDI_STAKER="0x...your agent address..."
   export ARDI_ROOT="/path/to/ardinal"   # varsayılan: bu scriptin bulunduğu klasör
 
 Kullanım:
@@ -57,7 +59,6 @@ except ImportError:
     fcntl = None  # type: ignore[misc, assignment]
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_STAKER = "0x266836a48C76F5a5E5d6265A97D7f3D90E339072
 
 
 def load_dotenv_optional(project_dir: Path) -> None:
@@ -544,10 +545,17 @@ def main() -> None:
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     model = os.environ.get("OPENROUTER_MODEL", "").strip() or "anthropic/claude-3.5-sonnet"
-    staker = os.environ.get("ARDI_STAKER", "").strip() or DEFAULT_STAKER
+    staker = os.environ.get("ARDI_STAKER", "").strip()
 
     if not api_key:
         sys.stderr.write("Set OPENROUTER_API_KEY in the environment.\n")
+        sys.exit(1)
+    if not args.dry_run and not staker:
+        sys.stderr.write(
+            "ARDI_STAKER yok. .env dosyasına kendi cüzdan adresini yaz (./ardi status çıktısındaki 0x...):\n"
+            "  ARDI_STAKER=0x...\n"
+            "Sadece model çıktısı denemek için: python3 openrouter_mine.py --dry-run\n"
+        )
         sys.exit(1)
 
     poll = args.poll_sec
