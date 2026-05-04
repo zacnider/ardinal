@@ -40,38 +40,18 @@ cd ~/Downloads/ardinal-main
 
 ## 2) Bilgisayara araçları kur (Mac veya Linux masaüstü)
 
-### 2.1 Node.js ve Python — var mı kontrol, yoksa kur
+### 2.1 Node.js
 
-Önce Terminalde şunları yaz (her satırdan sonra Enter):
+[https://nodejs.org/](https://nodejs.org/) adresinden **LTS** indir, kur. Kurulumdan sonra Terminal’i **kapatıp yeniden aç**.
+
+Kontrol:
 
 ```bash
 node -v
 python3 --version
 ```
 
-**`node -v` çalışıyor ve sürüm 18 veya üstüyse (tercihen 20+)** → Node tamam.
-
-**`command not found` veya sürüm 18’in altı** → Node kur:
-
-- **Mac:** Tarayıcıda [https://nodejs.org/](https://nodejs.org/) aç → **LTS** yazan yeşil butonla **İndir** (`.pkg`) → indirilen dosyaya çift tıkla → kurulum sihirbazını bitir → Terminal pencerelerini **kapat**, yeni Terminal aç → tekrar `node -v` dene.
-- **Ubuntu / Debian masaüstü:** Terminalde:
-  ```bash
-  sudo apt update
-  sudo apt install -y nodejs npm
-  ```
-  Sürüm çok eskiyse [nodejs.org](https://nodejs.org/) üzerinden LTS `.deb` indirip kur veya resmi [NodeSource kurulum talimatı](https://github.com/nodesource/distributions#installation-instructions) ile 20.x ekle.
-
-**`python3 --version` çalışmıyor veya “command not found”** → Python kur:
-
-- **Mac:** [https://www.python.org/downloads/](https://www.python.org/downloads/) → **Download Python 3.x** → indirilen `.pkg` ile kur → yeni Terminal → `python3 --version`.
-- **Ubuntu / Debian:**  
-  ```bash
-  sudo apt update
-  sudo apt install -y python3 python3-pip
-  ```
-  Sonra `python3 --version`.
-
-Her iki komut da (`node -v` ve `python3 --version`) **birer sürüm numarası** yazdırıyorsa **2.2** adımına geç.
+İkisi de bir sürüm yazıyorsa devam. `node` yok diyorsa Node’u kurup Terminal’i yenile.
 
 ### 2.2 Proje kurulumu
 
