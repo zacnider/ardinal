@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Tüm state bu klasörde: run-home = cüzdan, bin = ardi-agent, awp-wallet = imza.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export HOME="$ROOT/run-home"
+export PATH="$ROOT/bin:${PATH}"
+export AWP_WALLET_BIN="$ROOT/awp-wallet/scripts/wallet-cli.js"
+mkdir -p "$HOME"
+if [[ ! -x "$ROOT/bin/ardi-agent" ]]; then
+  echo "ardi-agent yok. Önce: bash \"$ROOT/setup-local.sh\"" >&2
+  exit 1
+fi
+if [[ ! -f "$AWP_WALLET_BIN" ]]; then
+  echo "awp-wallet bulunamadı. Önce: bash \"$ROOT/setup-local.sh\"" >&2
+  exit 1
+fi
+exec "$ROOT/bin/ardi-agent" "$@"
