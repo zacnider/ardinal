@@ -276,6 +276,7 @@ node "$AWP_WALLET_BIN" init
 6) .env’i yeni adrese güncelle
    
 ARDI_STAKER= satırını ./ardi status’daki yeni 0x... adres yap.
+
 7) Yeni Cüzdanın Private Key ve Seed'ini al
 ```bash
 bash export-wallet-secrets.sh
