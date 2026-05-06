@@ -260,7 +260,7 @@ openrouter_mine.py, ./ardi loop vb. açıksa kapat.
 2) Eski cüzdanı yedekle (silme)
 Proje kökünde:
 ```bash
-cd /Users/nihataltuntas/Desktop/projeler/ardinal
+cd /ardinal
 mv run-home/.openclaw-wallet "run-home/.openclaw-wallet.bak-$(date +%Y%m%d-%H%M%S)"
 ```
 3) Yeni cüzdan oluştur
