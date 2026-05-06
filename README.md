@@ -249,4 +249,52 @@ Ayrılmak: **Ctrl+b** sonra **d**. Geri: `tmux attach -t ardi`
 | `OPENROUTER_API_KEY` hatası | `.env` proje kökünde mi, satır başında boşluk yok mu. |
 | Commit yanlış / staker | `.env` içinde `ARDI_STAKER` = `./ardi status` adresi. |
 
-Sunucuya taşıma, tmux, cüzdanı sıfırlama gibi **ek** konular: **`SETUP.md`**.
+## 10) Yeni cüzdana geçiş için en temiz akış:
+
+   
+
+1) Çalışan miner/process’i durdur
+
+openrouter_mine.py, ./ardi loop vb. açıksa kapat.
+
+2) Eski cüzdanı yedekle (silme)
+Proje kökünde:
+```bash
+cd /Users/nihataltuntas/Desktop/projeler/ardinal
+mv run-home/.openclaw-wallet "run-home/.openclaw-wallet.bak-$(date +%Y%m%d-%H%M%S)"
+```
+3) Yeni cüzdan oluştur
+   ```bash
+export HOME="$PWD/run-home"
+export AWP_WALLET_BIN="$PWD/awp-wallet/scripts/wallet-cli.js"
+node "$AWP_WALLET_BIN" init
+```
+5) Yeni adresi doğrula
+ ```bash
+./ardi status
+```
+6) .env’i yeni adrese güncelle
+   
+ARDI_STAKER= satırını ./ardi status’daki yeni 0x... adres yap.
+7) Yeni Cüzdanın Private Key ve Seed'ini al
+ ```bash
+bash export-wallet-secrets.sh
+```
+
+8) Yeni cüzdana ETH gönder (Base)
+Sonra kontrol:
+ ```bash
+./ardi gas
+```
+9) Stake ve eligibility
+     ```bash
+./ardi preflight
+./ardi stake
+./ardi buy-and-stake --quote
+./ardi buy-and-stake --yes --lock-days 3
+./ardi preflight
+```
+10) Mining başlat
+ ```bash
+python3 openrouter_mine.py --auto-chain
+```
