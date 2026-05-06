@@ -264,30 +264,30 @@ cd /Users/nihataltuntas/Desktop/projeler/ardinal
 mv run-home/.openclaw-wallet "run-home/.openclaw-wallet.bak-$(date +%Y%m%d-%H%M%S)"
 ```
 3) Yeni cüzdan oluştur
-   ```bash
+```bash
 export HOME="$PWD/run-home"
 export AWP_WALLET_BIN="$PWD/awp-wallet/scripts/wallet-cli.js"
 node "$AWP_WALLET_BIN" init
 ```
 5) Yeni adresi doğrula
- ```bash
+```bash
 ./ardi status
 ```
 6) .env’i yeni adrese güncelle
    
 ARDI_STAKER= satırını ./ardi status’daki yeni 0x... adres yap.
 7) Yeni Cüzdanın Private Key ve Seed'ini al
- ```bash
+```bash
 bash export-wallet-secrets.sh
 ```
 
 8) Yeni cüzdana ETH gönder (Base)
 Sonra kontrol:
- ```bash
+```bash
 ./ardi gas
 ```
 9) Stake ve eligibility
-     ```bash
+```bash
 ./ardi preflight
 ./ardi stake
 ./ardi buy-and-stake --quote
@@ -295,6 +295,6 @@ Sonra kontrol:
 ./ardi preflight
 ```
 10) Mining başlat
- ```bash
+```bash
 python3 openrouter_mine.py --auto-chain
 ```
